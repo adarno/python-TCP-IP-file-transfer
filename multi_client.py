@@ -15,7 +15,7 @@ class ClientThread(threading.Thread):
 
         # Connect the socket to the port where the server is listening
         self.server_address = ('localhost', self.port)
-        print('connecting to %s port %s' % self.server_address)
+        print(self.name + ': connecting to %s port %s' % self.server_address)
         self.socket.connect(self.server_address)
 
     def run(self):
@@ -36,10 +36,10 @@ class ClientThread(threading.Thread):
 
             # receive response
             response = self.socket.recv(1024)
-            print("received: " + response)
+            print(self.name + ": received: " + response)
 
         finally:
-            print("closing socket.")
+            print(self.name + ": closing socket.")
             self.socket.close()
 
 

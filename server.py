@@ -9,7 +9,7 @@ class ServerThread(threading.Thread):
         threading.Thread.__init__(self)
         self.client_address = client_address
         self.client_socket = client_socket
-        print "[+] New thread started for " + str(self.client_address)
+        print(self.name + ": [+] New thread started for " + str(self.client_address))
 
     def run(self):
 
@@ -21,7 +21,7 @@ class ServerThread(threading.Thread):
             # Receive the data in small chunks
             while True:
                 data = self.client_socket.recv(1024)
-                print("received data: " + data + " in thread " + self.name)
+                print(self.name + ": received data: " + data + " in thread " + self.name)
 
                 if data:
                     text += data
@@ -31,7 +31,7 @@ class ServerThread(threading.Thread):
                     except:
                         pass
                 else:
-                    print(self.client_socket + " closed the connection.")
+                    print(self.name + ": " + self.client_socket + " closed the connection.")
                     break
 
 
@@ -41,7 +41,7 @@ class ServerThread(threading.Thread):
 
         # write data to file
         file_obj = open("recv.sat", "w")
-        print("writing data to file")
+        print(self.name + ": writing data to file")
         file_obj.write(text)
         file_obj.close()
 
