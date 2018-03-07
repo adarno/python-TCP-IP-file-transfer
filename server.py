@@ -8,11 +8,11 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Bind the socket to the port
 server_address = ('localhost', 8070)
-print(sys.stderr, 'starting up on %s port %s' % server_address)
+print >> sys.stderr, 'starting up on %s port %s' % server_address
 sock.bind(server_address)
 
 # Listen for incoming connections
-sock.listen(1)
+sock.listen(5)
 
 while True:
     # Wait for a connection
@@ -35,7 +35,7 @@ while True:
                 try:
                     connection.send(response)
                 except:
-                    print("connection closed by client")
+                    pass
             else:
                 print(client_address + " closed the connection.")
                 break
@@ -47,5 +47,6 @@ while True:
 
     # write data to file
     file_obj = open("recv.sat", "w")
+    print("writing data to file")
     file_obj.write(text)
     file_obj.close()
