@@ -21,7 +21,7 @@ class ServerThread(threading.Thread):
             # Receive the data in small chunks
             while True:
                 data = self.client_socket.recv(1024)
-                print("received data ... ")
+                print("received data: " + data + " in thread " + self.name)
 
                 if data:
                     text += data
@@ -62,6 +62,4 @@ if __name__ == "__main__":
         tcpsock.listen(4)
         print "\nListening for incoming connections..."
         connection, client_address = tcpsock.accept()
-        newthread = ServerThread(client_address, connection)
-        newthread.start()
-        threads.append(newthread)
+        threads.append(ServerThread(client_address, connection).start())
