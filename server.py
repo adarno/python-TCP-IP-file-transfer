@@ -57,9 +57,11 @@ if __name__ == "__main__":
     tcpsock.bind((host,port))
     threads = []
 
-    tcpsock.listen(4)
-    print "\nListening for incoming connections..."
-    connection, client_address = tcpsock.accept()
-    newthread = ServerThread(client_address, connection)
-    newthread.start()
-    threads.append(newthread)
+    while True:
+
+        tcpsock.listen(4)
+        print "\nListening for incoming connections..."
+        connection, client_address = tcpsock.accept()
+        newthread = ServerThread(client_address, connection)
+        newthread.start()
+        threads.append(newthread)
