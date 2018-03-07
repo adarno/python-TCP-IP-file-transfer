@@ -5,48 +5,45 @@ import threading
 
 class ServerThread(threading.Thread):
 
-    def __init__(self, client_ip, client_port, client_socket):
+    def __init__(self, client_address, client_socket):
         threading.Thread.__init__(self)
-        self.client_ip = client_ip
-        self.client_port = client_port
+        self.client_address = client_address
         self.client_socket = client_socket
-        print "[+] New thread started for "+ip+":"+str(port)
+        print "[+] New thread started for " + str(self.client_address)
 
     def run(self):
 
-        while True:
+        text = ""
 
-            text = ""
+        try:
+            print >> sys.stderr, 'connection from', self.client_address
 
-            try:
-                print >> sys.stderr, 'connection from', self.client_ip, ":", self.client_port
+            # Receive the data in small chunks
+            while True:
+                data = self.client_socket.recv(1024)
+                print("received data ... ")
 
-                # Receive the data in small chunks
-                while True:
-                    data = self.client_socket.recv(1024)
-                    print("received data ... ")
-
-                    if data:
-                        text += data
-                        response = "transfer successfull"
-                        try:
-                            self.client_socket.send(response)
-                        except:
-                            pass
-                    else:
-                        print(self.client_socket + " closed the connection.")
-                        break
+                if data:
+                    text += data
+                    response = "transfer successfull"
+                    try:
+                        self.client_socket.send(response)
+                    except:
+                        pass
+                else:
+                    print(self.client_socket + " closed the connection.")
+                    break
 
 
-            except:
-                # Clean up the connection
-                self.client_socket.close()
+        except:
+            # Clean up the connection
+            self.client_socket.close()
 
-            # write data to file
-            file_obj = open("recv.sat", "w")
-            print("writing data to file")
-            file_obj.write(text)
-            file_obj.close()
+        # write data to file
+        file_obj = open("recv.sat", "w")
+        print("writing data to file")
+        file_obj.write(text)
+        file_obj.close()
 
 
 if __name__ == "__main__":
@@ -62,7 +59,7 @@ if __name__ == "__main__":
 
     tcpsock.listen(4)
     print "\nListening for incoming connections..."
-    (clientsock, (ip, port)) = tcpsock.accept()
-    newthread = ServerThread(ip, port, clientsock)
+    connection, client_address = tcpsock.accept()
+    newthread = ServerThread(client_address, connection)
     newthread.start()
     threads.append(newthread)
