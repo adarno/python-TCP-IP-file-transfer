@@ -5,19 +5,26 @@ import sys
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Connect the socket to the port where the server is listening
-server_address = ('localhost', 10000)
+server_address = ('localhost', 8070)
 print('connecting to %s port %s' % server_address)
 sock.connect(server_address)
 
 try:
 
+    # open file
+    file_obj = open("testfile.sat", "r")
+    message = file_obj.read()
+    #message = "this is a test message."
+
     # Send data
-    message = 'This is the message.  It will be repeated.'
-    print("sending message: " + message)
+    print("sending: " + file_obj.name)
     sock.sendall(message)
 
+    # close file
+    file_obj.close()
 
-    response = sock.recv(16)
+    # receive response
+    response = sock.recv(1024)
     print("received: " + response)
 
 finally:
