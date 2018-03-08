@@ -1,6 +1,7 @@
 import socket
 import sys
 import threading
+import json
 
 
 class ServerThread(threading.Thread):
@@ -13,18 +14,18 @@ class ServerThread(threading.Thread):
 
     def run(self):
 
-        text = ""
+        raw_data = ""
 
         try:
             print >> sys.stderr, 'connection from', self.client_address
 
+            print(self.name + ": receiving data ...")
             # Receive the data in small chunks
             while True:
                 data = self.client_socket.recv(1024)
-                print(self.name + ": received data: " + data + " in thread " + self.name)
 
                 if data:
-                    text += data
+                    raw_data += data
                     response = "transfer successfull"
                     try:
                         self.client_socket.send(response)
@@ -39,10 +40,14 @@ class ServerThread(threading.Thread):
             # Clean up the connection
             self.client_socket.close()
 
+        # convert raw_data to json
+        json_obj = json.loads(raw_data)
+        path = "recv/" + json_obj['file_name']
+
         # write data to file
-        file_obj = open("recv.sat", "w")
+        file_obj = open(path, "w")
         print(self.name + ": writing data to file")
-        file_obj.write(text)
+        file_obj.write(json_obj['data'])
         file_obj.close()
 
 
@@ -62,4 +67,9 @@ if __name__ == "__main__":
         tcpsock.listen(4)
         print "\nListening for incoming connections..."
         connection, client_address = tcpsock.accept()
-        threads.append(ServerThread(client_address, connection).start())
+
+        # open new thread for connection and start
+        new_thread = ServerThread(client_address, connection)
+        new_thread.start()
+
+        threads.append(new_thread)

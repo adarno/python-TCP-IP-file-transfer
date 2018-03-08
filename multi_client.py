@@ -1,13 +1,14 @@
 import socket
 import sys
 import threading
+import json
 
 
 class ClientThread(threading.Thread):
 
-    def __init__(self, server_port, message):
+    def __init__(self, server_port, file_name):
         super(ClientThread, self).__init__()
-        self.message = message
+        self.file_name = file_name
         self.port = server_port
 
         # Create a TCP/IP socket
@@ -22,17 +23,20 @@ class ClientThread(threading.Thread):
         try:
 
             # open file
-            #file_obj = open("testfile.sat", "r")
-            #message = file_obj.read()
-            # message = "this is a test message."
+            file_obj = open(self.file_name, "r")
+
+            # set up dictionary
+            message_dict = {"file_name" : self.file_name, "data" : file_obj.read()}
+            # convert dictionary to json
+            json_message = json.dumps(message_dict)
 
             # Send data
-            #print("sending: " + file_obj.name)
+            print(self.name + ": sending: " + file_obj.name)
 
             # close file
-            #file_obj.close()
+            file_obj.close()
 
-            self.socket.sendall(self.message)
+            self.socket.sendall(json_message)
 
             # receive response
             response = self.socket.recv(1024)
@@ -45,10 +49,10 @@ class ClientThread(threading.Thread):
 
 
 
-thread1 = ClientThread(8070, "message 1")
-thread2 = ClientThread(8070, "message 2")
+thread1 = ClientThread(8070, "testfile.sat")
+#thread2 = ClientThread(8070, "message 2")
 
 # start threads
 thread1.start()
-thread2.start()
+#thread2.start()
 
