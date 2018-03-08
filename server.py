@@ -1,7 +1,19 @@
+""" server.py
+
+    TCP/IP server that opens a new thread for every new connection.
+    Received data should be a json object of type
+    {"client": client_name, "file_name": name_of_file, "data": data_contained_in _file}.
+
+    Server creates a new directory for every client specified by the name of the client
+    in /recv and writes the client's data to that directory.
+"""
+
 import socket
 import sys
 import threading
 import json
+import time
+import os
 
 
 class ServerThread(threading.Thread):
@@ -42,7 +54,10 @@ class ServerThread(threading.Thread):
 
         # convert raw_data to json
         json_obj = json.loads(raw_data)
-        path = "recv/" + json_obj['file_name']
+        if not os.path.isdir("recv/" + json_obj['client']):
+            os.mkdir("recv/" + json_obj['client'])
+
+        path = "recv/" + json_obj['client'] + "/" + json_obj['file_name']
 
         # write data to file
         file_obj = open(path, "w")
