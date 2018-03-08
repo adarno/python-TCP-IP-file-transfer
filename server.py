@@ -5,7 +5,10 @@
     {"client": client_name, "file_name": name_of_file, "data": data_contained_in _file}.
 
     Server creates a new directory for every client specified by the name of the client
-    in /recv and writes the client's data to that directory.
+    in /recv, except the client's directory already exists.
+
+    Server then creates a timestamp directory for every data transfer in client's dir and
+    writes received data to that directory.
 """
 
 import socket
