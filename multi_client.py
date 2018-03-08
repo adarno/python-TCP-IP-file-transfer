@@ -62,8 +62,8 @@ class ClientThread(threading.Thread):
 
 
 
-thread1 = ClientThread(8070, "testfile.sat", "Paul")
-thread2 = ClientThread(8070, "sat_example.sat", "Johannes")
+thread1 = ClientThread(8070, "testfile.sat", "name1")
+thread2 = ClientThread(8070, "sat_example.sat", "name2")
 
 # start threads
 thread1.start()
