@@ -12,7 +12,7 @@ import socket
 import sys
 import threading
 import json
-import time
+import datetime
 import os
 
 
@@ -54,10 +54,22 @@ class ServerThread(threading.Thread):
 
         # convert raw_data to json
         json_obj = json.loads(raw_data)
+
+        # create timestamp
+        timestamp = datetime.date.today().strftime("%Y_%m_%d_")
+        timestamp += datetime.datetime.today().strftime("%H%M%S")
+
+        # ckeck whether client directory exists
         if not os.path.isdir("recv/" + json_obj['client']):
             os.mkdir("recv/" + json_obj['client'])
 
-        path = "recv/" + json_obj['client'] + "/" + json_obj['file_name']
+        # timestamp directory should not exist yet but check for safety purposes
+        if not os.path.isdir("recv/" + json_obj['client'] + "/" + str(timestamp)):
+            os.mkdir("recv/" + json_obj['client'] + "/" + str(timestamp))
+
+        # asseble path where file will be written
+        path = "recv/" + json_obj['client'] + "/" \
+               + str(timestamp) + "/" + json_obj['file_name']
 
         # write data to file
         file_obj = open(path, "w")
