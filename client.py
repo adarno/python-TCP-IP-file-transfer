@@ -1,3 +1,10 @@
+""" client.py
+
+    Example TCP/IP client. Not threaded.
+    Got replaced my multi_client.py
+
+"""
+
 import socket
 import sys
 

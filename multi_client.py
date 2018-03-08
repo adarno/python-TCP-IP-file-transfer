@@ -1,6 +1,6 @@
 """ multi_client.py
 
-    TCP/IP client that can handle multiple connections.
+    TCP/IP client that can handle multiple connections. Connects with server.py.
 
     Reads data from file and sends json object to server containing data, the name of the client
     as well as the name of the transferred file.
